@@ -65,22 +65,32 @@ const init = () => {
     // store my new user as `me`
     me = data.me;
     $('#user-name').replaceWith(me.state.name);
-    //listen the invite from driver
-    me.direct.on('$.invite', payload => {
-      const id = payload.data.channel.replace('chat-engine#chat#private.#', '');
-      const isExist = $('#people-list ul').find('#' + id).length;
-      console.log(isExist);
-      if (isExist == 0) {
-        $('#people-list ul').append(
-          peopleTemplate({
-            id: id,
-            roomId: payload.data.channel,
-            driverId: payload.sender.state.name,
-            avatar: payload.sender.state.avatar_url
-          })
+    // search old invite when login and listen the invite from driver
+    me.direct
+      .search({
+        event: '$.invite',
+        limit: 20
+      })
+      .on('$.invite', payload => {
+        const id = payload.data.channel.replace(
+          'chat-engine#chat#private.#',
+          ''
         );
-      }
-    });
+        const isExist = $('#people-list ul').find('#' + id).length;
+        console.log(isExist);
+        if (isExist == 0) {
+          $('#people-list ul').append(
+            peopleTemplate({
+              id: id,
+              roomId: payload.data.channel,
+              driverId: payload.sender.state.name,
+              avatar: payload.sender.state.avatar_url
+            })
+          );
+        }
+      });
+    // });
+
     // // when a user comes online, render them in the online list
     // myChat.on('$.online.*', data => {
     //   $('#people-list ul').append(peopleTemplate(data.user));
@@ -108,6 +118,7 @@ ChatEngine.on('$.network.down.offline', payload => {
 
 // send a message to the Chat
 const sendMessage = () => {
+  console.log(myChat);
   // get the message text from the text input
   let message = $('#message-to-send')
     .val()
