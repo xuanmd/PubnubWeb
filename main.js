@@ -67,16 +67,19 @@ const init = () => {
     $('#user-name').replaceWith(me.state.name);
     //listen the invite from driver
     me.direct.on('$.invite', payload => {
-      // const isExist = $('#people-list ul').find('#' + payload.data.channel) > 0;
-      // if (!isExist) {
-      $('#people-list ul').append(
-        peopleTemplate({
-          roomId: payload.data.channel,
-          driverId: 'xuan1',
-          orderId: 'order1'
-        })
-      );
-      // }
+      const id = payload.data.channel.replace('chat-engine#chat#private.#', '');
+      const isExist = $('#people-list ul').find('#' + id).length;
+      console.log(isExist);
+      if (isExist == 0) {
+        $('#people-list ul').append(
+          peopleTemplate({
+            id: id,
+            roomId: payload.data.channel,
+            driverId: payload.sender.state.name,
+            avatar: payload.sender.state.avatar_url
+          })
+        );
+      }
     });
     // // when a user comes online, render them in the online list
     // myChat.on('$.online.*', data => {
@@ -109,7 +112,6 @@ const sendMessage = () => {
   let message = $('#message-to-send')
     .val()
     .trim();
-
   // if the message isn't empty
   if (message.length) {
     // emit the `message` event to everyone in the Chat
@@ -117,15 +119,10 @@ const sendMessage = () => {
       text: message,
       sentAt: new Date().toISOString(),
       from: {
-        uuid: 'user3',
-        email: 'Xuan3@gmail.com',
-        name: 'Xuan3'
+        uuid: me.uuid,
+        email: me.state.email,
+        name: me.state.name
       }
-      /*translate: {
-                text: message,
-                source: source_language,
-                target: target_language
-            }*/
     });
 
     // clear out the text input

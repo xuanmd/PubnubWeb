@@ -62,17 +62,19 @@
         </li>
     </script>
     <script id="person-template" type="text/x-handlebars-template">
-        <li class="clearfix" id="{{roomId}}" onclick="gotoChat('{{roomId}}')">
-            <!-- <img src="{{state.avatar}}" alt="avatar" /> -->
+
+        <li class="clearfix" id="{{id}}" onclick="gotoChat('{{roomId}}')">
+            <img src="{{avatar}}" alt="avatar" id="avatarImage" height="42" width="42"/>
             <div class="about">
-                <div class="name">{{orderId}}</div>
+                <!-- <div class="name">{{orderId}}</div> -->
                 <div class="status">
                     {{driverId}}
                 </div>
             </div>
         </li>
+
     </script>
-    <script src="index.js" type='text/javascript'></script>
+    <script src="main.js" type='text/javascript'></script>
 
 </body>
 
